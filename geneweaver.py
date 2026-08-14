@@ -14,11 +14,11 @@ def find_matches(genome,guide,max_mismatches):
     n = len(genome)
     k= len(guide)
     for i in range(n-k+1):
-        matches = [i:i+1]
+        matches = [i:i+k]
         mismatches = count_mismatches(matches,guide)
-        if mismatches <= max_mismatches
-        return matches
-    return None
+        if mismatches <= max_mismatches:
+    return matches
+return None
        
 genome = "ACGTACGTTTGCATGCAG"
 guide =  "GTTTG"
