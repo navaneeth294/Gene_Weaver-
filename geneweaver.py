@@ -13,13 +13,17 @@ def count_mismatches(seq1, seq2):
 def find_matches(genome,guide,max_mismatches):
     n = len(genome)
     k= len(guide)
+    matche = []
     for i in range(n-k+1):
-        matches = [i:i+k]
+        matches = genome[i:i+k]
         mismatches = count_mismatches(matches,guide)
         if mismatches <= max_mismatches:
-    return matches
-return None
+            matche.append((i,matches))
+            
+    
+           
+    return matche
        
-genome = "ACGTACGTTTGCATGCAG"
+genome = "ACGTACGTTTGCATGCAGGTTTG"
 guide =  "GTTTG"
 print(find_matches(genome, guide, max_mismatches=1))
