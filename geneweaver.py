@@ -26,4 +26,6 @@ def find_matches(genome,guide,max_mismatches):
        
 genome = "ACGTACGTTTGCATGCAGGTTTG"
 guide =  "GTTTG"
-print(find_matches(genome, guide, max_mismatches=1))
+#print(find_matches(genome, guide, max_mismatches=1))
+
+
