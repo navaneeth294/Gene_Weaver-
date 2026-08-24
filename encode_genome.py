@@ -11,8 +11,8 @@ enc_guide = encode_seq("GTTTG")
 print(len(enc_genome))
 print(len(enc_guide))
 
-n = len(enc_genome) - len(enc_guide) + 1
+num_positions = len(enc_genome) - len(enc_guide) + 1
+mismatch_counts = np.zeros(num_positions,dtype = np.uint8)
 
-
-print(n)
-#print(out)
+print(num_positions)
+print(mismatch_counts.shape)
