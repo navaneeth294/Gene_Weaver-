@@ -12,7 +12,7 @@ print(len(enc_genome))
 print(len(enc_guide))
 
 n = len(enc_genome) - len(enc_guide) + 1
-out = np.zeros(n, dtype=np.uint8)
+
 
 print(n)
-print(out)
+#print(out)
