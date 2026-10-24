@@ -1,4 +1,4 @@
-# FUNCTION TO COUNT THE MISMATCHES IN A SEQUENCE
+﻿# FUNCTION TO COUNT THE MISMATCHES IN A SEQUENCE
 def count_mismatches(seq1, seq2):
     mismatches = 0
     for sequence1,sequence2 in zip(seq1,seq2):

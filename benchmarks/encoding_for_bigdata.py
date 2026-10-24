@@ -1,8 +1,8 @@
-import time
+﻿import time
 import numpy as np
 from numba import cuda
 from Bio import SeqIO
-from alignment_kernel import alignment_kernal
+from alignment_kernel import alignment_kernel
 
 def encode_seq_fast(seq_str):
     seq_bytes = np.frombuffer(seq_str.encode('ascii'), dtype=np.uint8)
@@ -37,14 +37,14 @@ try:
     d_mismatch_counts = cuda.to_device(mismatch_counts)
 
     start = time.perf_counter()
-    alignment_kernal[blocks, threads_per_block](d_genome, d_guide, d_mismatch_counts)
+    alignment_kernel[blocks, threads_per_block](d_genome, d_guide, d_mismatch_counts)
     cuda.synchronize()
     end = time.perf_counter()
 
     mismatch_counts = d_mismatch_counts.copy_to_host()
     matches = np.sum(mismatch_counts <= 1)
 
-    print(f"SUCCESS — no memory error.")
+    print(f"SUCCESS â€” no memory error.")
     print(f"GPU found {matches} matches")
     print(f"GPU time taken: {end - start:.4f} seconds")
 

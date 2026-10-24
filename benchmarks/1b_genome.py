@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 
 n = 1_000_000_000
 letter_codes = np.array([65, 67, 71, 84], dtype=np.uint8) 

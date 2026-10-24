@@ -1,4 +1,4 @@
-import time
+﻿import time
 from Bio import SeqIO
 from geneweaver import find_matches
 

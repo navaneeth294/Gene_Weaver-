@@ -1,4 +1,4 @@
-from textual.app import App
+﻿from textual.app import App
 from textual.widgets import Static, ProgressBar
 from Bio import SeqIO
 

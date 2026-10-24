@@ -1,4 +1,4 @@
-from Bio import SeqIO
+﻿from Bio import SeqIO
 from encode_seq import encode_seq  
 import numpy as np
 

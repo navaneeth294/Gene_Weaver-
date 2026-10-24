@@ -1,9 +1,9 @@
-import numpy as np
+﻿import numpy as np
 from numba import cuda
 from Bio import SeqIO
 from geneweaver import find_matches
 from encode_seq import encode_seq
-from alignment_kernel import alignment_kernal
+from alignment_kernel import alignment_kernel
 
 record = next(SeqIO.parse("mock_genome.fasta", "fasta"))
 full_genome = str(record.seq)
@@ -22,7 +22,7 @@ num_positions = len(enc_genome) - len(enc_guide) + 1
 mismatch_counts = np.zeros(num_positions, dtype=np.uint8)
 threads_per_block = 256
 blocks = (num_positions + threads_per_block - 1) // threads_per_block
-alignment_kernal[blocks, threads_per_block](enc_genome, enc_guide, mismatch_counts)
+alignment_kernel[blocks, threads_per_block](enc_genome, enc_guide, mismatch_counts)
 cuda.synchronize()
 gpu_positions = set(int(i) for i in np.where(mismatch_counts <= max_mismatches)[0])
 

@@ -1,9 +1,9 @@
-import time
+﻿import time
 import numpy as np
 from Bio import SeqIO
 from encode_seq import encode_seq
 from numba import cuda
-from alignment_kernel import alignment_kernal
+from alignment_kernel import alignment_kernel
 
 
 record = next(SeqIO.parse("mock_genome.fasta","fasta"))
@@ -30,7 +30,7 @@ d_mismatch_counts = cuda.to_device(mismatch_counts)
 
 
 start = time.perf_counter()
-alignment_kernal[blocks, threads_perblock](d_genome,d_guide,d_mismatch_counts)
+alignment_kernel[blocks, threads_perblock](d_genome,d_guide,d_mismatch_counts)
 cuda.synchronize()
 end = time.perf_counter()
 
