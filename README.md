@@ -34,27 +34,34 @@ FASTA ──► BioPython reader ──► uint8 encoding (A=0, C=1, G=2, T=3)
                      └──────────► compare results ◄────────┘
 ```
 
-1. **Encoding.** Each sequence is converted to a `uint8` array. For large genomes, `encoding_for_bigdata.py` uses a vectorised NumPy lookup table instead of a per-character Python loop.
-2. **CPU baseline** (`geneweaver.py`, `run_baseline.py`). A straightforward sliding window counts the mismatches at each position. It is the reference that the GPU output is checked against.
+1. **Encoding.** Each sequence is converted to a `uint8` array. For large genomes, `benchmarks/encoding_for_bigdata.py` uses a vectorised NumPy lookup table instead of a per-character Python loop.
+2. **CPU baseline** (`geneweaver.py`, `benchmarks/run_baseline.py`). A straightforward sliding window counts the mismatches at each position. It is the reference that the GPU output is checked against.
 3. **GPU kernel** (`alignment_kernel.py`). Each thread computes the Hamming distance between the guide and one genome window and writes it to an output array. Data moves explicitly with `cuda.to_device()` and `copy_to_host()`.
-4. **Verification** (`full_diagnostic.py`, `bug_check.py`). These compare the GPU and CPU results position by position.
+4. **Verification** (`tests/full_diagnostic.py`, `tests/bug_check.py`). These compare the GPU and CPU results position by position.
 5. **TUI** (`tui.py`). A [Textual](https://textual.textualize.io/) app reads the genome in 1 Mbp chunks and shows chunking progress with a progress bar.
 
 ## Project structure
 
-| File | Purpose |
-|---|---|
-| `geneweaver.py` | CPU reference: `count_mismatches`, `find_matches` |
-| `alignment_kernel.py` | Numba CUDA alignment kernel |
-| `encode_seq.py` | DNA → `uint8` encoding |
-| `run_baseline.py` | CPU benchmark on `mock_genome.fasta` |
-| `run_gpu.py` | GPU benchmark on `mock_genome.fasta` |
-| `full_diagnostic.py`, `bug_check.py` | GPU vs CPU position-by-position verification |
-| `1b_genome.py` | Generates a 1-billion-base random genome (`mock_genome_1b.fasta`) |
-| `encoding_for_bigdata.py` | Vectorised encoding + GPU run at 1 Gbp |
-| `1b_cpu_test.py` | CPU baseline at 1 Gbp |
-| `readgenome.py` | BioPython FASTA reading check |
-| `tui.py` | Textual chunking progress UI |
+```
+Gene_Weaver-/
+├── geneweaver.py          # CPU reference: count_mismatches, find_matches
+├── alignment_kernel.py    # Numba CUDA alignment kernel
+├── encode_seq.py          # DNA -> uint8 encoding
+├── encode_genome.py       # Encodes mock_genome.fasta for the GPU
+├── tui.py                 # Textual chunking progress UI
+├── mock_genome.fasta      # 31 Mbp synthetic test genome
+├── requirements.txt
+├── benchmarks/
+│   ├── run_baseline.py         # CPU benchmark (31 Mbp)
+│   ├── run_gpu.py              # GPU benchmark (31 Mbp)
+│   ├── 1b_genome.py            # Generates a 1 Gbp random genome
+│   ├── encoding_for_bigdata.py # Vectorised encoding + GPU run (1 Gbp)
+│   └── 1b_cpu_test.py          # CPU baseline (1 Gbp)
+└── tests/
+    ├── full_diagnostic.py      # GPU vs CPU position-by-position check
+    ├── bug_check.py            # Kernel launch / match-count check
+    └── readgenome.py           # BioPython FASTA reading check
+```
 
 ## Getting started
 
@@ -68,19 +75,20 @@ venv\Scripts\activate        # Windows  (Linux/macOS: source venv/bin/activate)
 pip install -r requirements.txt
 ```
 
-Run the 31 Mbp benchmark, which uses `mock_genome.fasta`:
+Run all commands from the repository root. Run the 31 Mbp benchmark, which uses `mock_genome.fasta`:
 
 ```bash
-python run_baseline.py       # CPU
-python run_gpu.py            # GPU
+python -m benchmarks.run_baseline   # CPU
+python -m benchmarks.run_gpu        # GPU
+python -m tests.full_diagnostic     # verify GPU == CPU
 ```
 
 Run the 1 Gbp benchmark (this writes a ~1 GB file, which is git-ignored):
 
 ```bash
-python 1b_genome.py
-python encoding_for_bigdata.py   # GPU
-python 1b_cpu_test.py            # CPU (slow: several minutes)
+python -m benchmarks.1b_genome
+python -m benchmarks.encoding_for_bigdata   # GPU
+python -m benchmarks.1b_cpu_test            # CPU (slow: several minutes)
 ```
 
 Run the TUI:
@@ -111,3 +119,7 @@ python tui.py
 ## Tech stack
 
 Python · Numba (CUDA) · NumPy · BioPython · Textual
+
+## License
+
+MIT. See [LICENSE](LICENSE).
